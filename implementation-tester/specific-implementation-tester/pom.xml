@@ -6,7 +6,7 @@
     <parent>
         <groupId>javax.cache</groupId>
         <artifactId>implementation-tester</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>specific-implementation-tester</artifactId>
@@ -116,7 +116,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>org.jsr107.tck.testutil.TCKTestListener</value>
+                        </property>
+                    </properties>
                     <systemPropertyVariables>
+                        <java.net.preferIPv4Stack>${java.net.preferIPv4Stack}</java.net.preferIPv4Stack>
                         <domainJar>${domain-lib-dir}/${domain-jar}</domainJar>
                         <javax.management.builder.initial>${javax.management.builder.initial}</javax.management.builder.initial>
                         <org.jsr107.tck.management.agentId>${org.jsr107.tck.management.agentId}</org.jsr107.tck.management.agentId>

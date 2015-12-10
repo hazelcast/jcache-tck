@@ -6,7 +6,7 @@
     <parent>
         <groupId>javax.cache</groupId>
         <artifactId>tck-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <groupId>javax.cache</groupId>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
-            <version>1.0.0</version>
+            <version>${jcache.version}</version>
         </dependency>
 
         <dependency>
@@ -78,7 +78,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
 
@@ -134,8 +134,15 @@
         <profile>
             <id>run_tests_from_ide</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
+
+            <properties>
+                <implementation-groupId>com.hazelcast</implementation-groupId>
+                <implementation-artifactId>hazelcast-all</implementation-artifactId>
+                <!--<implementation-version>${implementation-version}</implementation-version>-->
+            </properties>
+
 
             <dependencies>
                 <dependency>
@@ -143,13 +150,13 @@
                     <artifactId>${implementation-artifactId}</artifactId>
                     <version>${implementation-version}</version>
                 </dependency>
-                <dependency>
-                    <groupId>javax.cache</groupId>
+                <!--<dependency>-->
+                    <!--<groupId>javax.cache</groupId>-->
                     <!--<artifactId>spring-annotations-test-harness</artifactId>-->
                     <!--<artifactId>guice-annotations-test-harness</artifactId>-->
-                    <artifactId>cdi-weld-annotations-test-harness</artifactId>
-                    <version>${project.parent.version}</version>
-                </dependency>
+                    <!--<artifactId>cdi-weld-annotations-test-harness</artifactId>-->
+                    <!--<version>${project.parent.version}</version>-->
+                <!--</dependency>-->
             </dependencies>
 
             <build>
@@ -159,15 +166,20 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.9</version>
                         <configuration>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
                             <systemPropertyVariables>
+                                <java.net.preferIPv4Stack>${java.net.preferIPv4Stack}</java.net.preferIPv4Stack>
                                 <domainJar>${domain-lib-dir}/${domain-jar}</domainJar>
-                                <javax.management.builder.initial> ${javax.management.builder.initial}</javax.management.builder.initial>
-                                <org.jsr107.tck.management.agentId>${org.jsr107.tck.management.agentId}</org.jsr107.tck.management.agentId>
+                                <javax.management.builder.initial>${javax.management.builder.initial}
+                                </javax.management.builder.initial>
+                                <org.jsr107.tck.management.agentId>${org.jsr107.tck.management.agentId}
+                                </org.jsr107.tck.management.agentId>
                                 <javax.cache.CacheManager>${CacheManagerImpl}</javax.cache.CacheManager>
                                 <javax.cache.Cache>${CacheImpl}</javax.cache.Cache>
                                 <javax.cache.Cache.Entry>${CacheEntryImpl}</javax.cache.Cache.Entry>
                                 <javax.cache.annotation.CacheInvocationContext>$
-                            {CacheInvocationContextImpl}</javax.cache.annotation.CacheInvocationContext>
+                                    {CacheInvocationContextImpl}
+                                </javax.cache.annotation.CacheInvocationContext>
                             </systemPropertyVariables>
                             <excludes>
                                 <exclude>**/annotation/*Test.java</exclude>

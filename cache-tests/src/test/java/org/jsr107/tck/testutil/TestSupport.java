@@ -49,6 +49,15 @@ public class TestSupport {
   private final Map<Class<?>, Class<?>> unwrapClasses = Collections.synchronizedMap(new HashMap<Class<?>, Class<?>>());
   private Properties unwrapProperties;
 
+//    static {
+//        Config config = new Config();
+//        config.getNetworkConfig().getJoin().getAwsConfig().setEnabled(false);
+//        config.getNetworkConfig().getJoin().getTcpIpConfig().setEnabled(false);
+//        config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
+//        Hazelcast.newHazelcastInstance(config);
+//
+//        System.out.println("Hazelcast instance created ...");
+//    }
   /**
    * Looks up the given attributeName for the given cache.
    *
