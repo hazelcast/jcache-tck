@@ -88,7 +88,7 @@ public class CacheMXBeanTest extends CacheTestSupport<Long, String> {
   public void testCustomConfiguration() throws Exception {
     boolean storeByValue = false;
     MutableConfiguration configuration = new MutableConfiguration()
-        .setReadThrough(true).setWriteThrough(true).setStoreByValue(storeByValue)
+        .setReadThrough(false).setWriteThrough(false).setStoreByValue(storeByValue)
         .setTypes(java.math.BigDecimal.class, java.awt.Color.class)
         .setManagementEnabled(true).setStatisticsEnabled(false);
     Cache cache = null;
@@ -102,12 +102,14 @@ public class CacheMXBeanTest extends CacheTestSupport<Long, String> {
     }
     assertEquals("java.math.BigDecimal", lookupManagementAttribute(cache, CacheConfiguration, "KeyType"));
     assertEquals("java.awt.Color", lookupManagementAttribute(cache, CacheConfiguration, "ValueType"));
-    assertEquals(true, lookupManagementAttribute(cache, CacheConfiguration, "ReadThrough"));
-    assertEquals(true, lookupManagementAttribute(cache, CacheConfiguration, "WriteThrough"));
+    assertEquals(false, lookupManagementAttribute(cache, CacheConfiguration, "ReadThrough"));
+    assertEquals(false, lookupManagementAttribute(cache, CacheConfiguration, "WriteThrough"));
     assertEquals(storeByValue, lookupManagementAttribute(cache, CacheConfiguration, "StoreByValue"));
     assertEquals(false, lookupManagementAttribute(cache, CacheConfiguration, "StatisticsEnabled"));
     assertEquals(true, lookupManagementAttribute(cache, CacheConfiguration, "ManagementEnabled"));
-    cache.close();
+
+    //this used to just call close() but that does not work if an implementation maintains statistics on the cluster.
+    cache.getCacheManager().destroyCache("customCache");
   }
 
 }

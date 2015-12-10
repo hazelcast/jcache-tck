@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>javax.cache</groupId>
     <artifactId>tck-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>TCK Parent</name>
@@ -21,15 +21,15 @@
         <module>app-domain</module>
         <module>test-domain</module>
         <module>cache-tests</module>
-        <!--<module>implementation-tester</module>-->
+        <module>implementation-tester</module>
         <!--<module>spring-annotations-test-harness</module>-->
         <!--<module>guice-annotations-test-harness</module>-->
         <!--<module>cdi-weld-annotations-test-harness</module>-->
     </modules>
 
-
+    <!-- Common Properties -->
     <properties>
-        <jsr107.api.version>1.0.0</jsr107.api.version>
+        <jcache.version>1.0.0</jcache.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -40,23 +40,6 @@
         <domain-lib-dir>${project.build.directory}/domainlib</domain-lib-dir>
         <domain-jar>domain.jar</domain-jar>
 
-
-        <!--################################################################################################################-->
-        <!--Change the following properties on the command line to override with the coordinates for your implementation-->
-        <implementation-groupId>com.hazelcast</implementation-groupId>
-        <implementation-artifactId>hazelcast</implementation-artifactId>
-        <implementation-version>3.3-JCACHE-SNAPSHOT</implementation-version>
-
-        <!-- Change the following properties to your CacheManager and Cache implementation. Used by the unwrap tests. -->
-        <CacheManagerImpl>com.hazelcast.cache.HazelcastCacheManager</CacheManagerImpl>
-        <CacheImpl>com.hazelcast.cache.ICache</CacheImpl>
-        <CacheEntryImpl>com.hazelcast.cache.CacheEntry</CacheEntryImpl>
-
-        <!--Change the following to point to your MBeanServer, so that the TCK can resolve it. -->
-        <!--<javax.management.builder.initial>org.jsr107.ri.management.RITCKMBeanServerBuilder</javax.management.builder.initial>-->
-        <!--<org.jsr107.tck.management.agentId>RIMBeanServer</org.jsr107.tck.management.agentId>-->
-
-        <!--################################################################################################################-->
     </properties>
 
     <build>
@@ -81,6 +64,7 @@
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
+                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -97,6 +81,34 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- deploy test jar so can be used by other jcache implementations.
+              - remove this plugin if no longer want test-jar deployed.
+              -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
 
             <plugin>
@@ -178,6 +190,43 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>ri</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!--RI Properties-->
+            <properties>
+                <!--################################################################################################################-->
+
+                <!--IPV4-->
+                <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+
+                <!--Change the following properties on the command line to override with the coordinates for your implementation-->
+                <implementation-groupId>com.hazelcast</implementation-groupId>
+                <implementation-artifactId>hazelcast</implementation-artifactId>
+                <implementation-version>${implementation-version}</implementation-version>
+
+                <!-- Change the following properties to your CacheManager and Cache implementation. Used by the unwrap tests. -->
+                <CacheManagerImpl>com.hazelcast.cache.impl.HazelcastServerCacheManager</CacheManagerImpl>
+                <CacheImpl>com.hazelcast.cache.ICache</CacheImpl>
+                <CacheEntryImpl>com.hazelcast.cache.impl.CacheEntry</CacheEntryImpl>
+
+                <!--Change the following to point to your MBeanServer, so that the TCK can resolve it. -->
+                <javax.management.builder.initial>com.hazelcast.cache.impl.TCKMBeanServerBuilder
+                </javax.management.builder.initial>
+                <org.jsr107.tck.management.agentId>TCKMbeanServer</org.jsr107.tck.management.agentId>
+
+                <!--################################################################################################################-->
+            </properties>
+
+
+
+
+        </profile>
+
+
     </profiles>
 
     <licenses>
@@ -187,6 +236,5 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
 
 </project>
