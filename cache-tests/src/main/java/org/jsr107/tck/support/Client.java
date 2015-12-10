@@ -21,11 +21,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A rudimentary {@link Client} that is used to invoke {@link Operation}s, those
  * of which will be handled by a {@link Server}.
- * <p/>
+ * <p>
  * Note: Only a single-thread should access individual {@link Client} instances
  * at any point in time.   Should multiple-threaded access be required,
  * additional {@link Client} instances should be created, one per thread.
@@ -75,8 +77,11 @@ public class Client implements AutoCloseable {
    *                     {@link Server}
    */
   public Client(InetAddress address, int port) throws IOException {
+    Logger logger = Logger.getLogger(this.getClass().getName());
     this.port = port;
     try {
+        logger.log(Level.INFO, "Starting " + this.getClass().getCanonicalName() +
+                " client connecting to server at address:" + address + " port:" + port);
         this.socket = new Socket(address, port);
     } catch (IOException ioe) {
         throw new IOException("Client failed to connect to server at " + address + ":" + port, ioe);

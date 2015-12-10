@@ -6,7 +6,7 @@
     <parent>
         <groupId>javax.cache</groupId>
         <artifactId>tck-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
 
     <groupId>javax.cache</groupId>
@@ -22,9 +22,9 @@
 
     <modules>
         <module>specific-implementation-tester</module>
-        <module>cdi-annotations-tester</module>
-        <module>spring-annotations-tester</module>
-        <module>guice-annotations-tester</module>
+        <!--<module>cdi-annotations-tester</module>-->
+        <!--<module>spring-annotations-tester</module>-->
+        <!--<module>guice-annotations-tester</module>-->
     </modules>
 
 
